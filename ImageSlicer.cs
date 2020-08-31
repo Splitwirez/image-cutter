@@ -160,32 +160,24 @@ namespace ImageCutter
 
         void ImageSubregionToFile(string folderPath, string fileName, Rect subregion)
         {
-            WriteableBitmap bmp = new WriteableBitmap(new PixelSize((int)subregion.Width, (int)subregion.Height), Vector.One);
-            
-            using (IRenderTarget rtb = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>().CreateRenderTarget(new object[] { new WriteableBitmapSurface(bmp) }))
+            if ((subregion.Width > 0) && (subregion.Height > 0))
             {
-                using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
+                WriteableBitmap bmp = new WriteableBitmap(new PixelSize((int)subregion.Width, (int)subregion.Height), Vector.One);
+                
+                using (IRenderTarget rtb = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>().CreateRenderTarget(new object[] { new WriteableBitmapSurface(bmp) }))
                 {
-                    ctx.DrawImage(Source.PlatformImpl, 1, subregion, subregion.WithX(0).WithY(0));
+                    using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
+                    {
+                        ctx.DrawImage(Source.PlatformImpl, 1, subregion, subregion.WithX(0).WithY(0));
+                    }
                 }
-            }
 
-            bmp.Save(Path.Combine(folderPath, fileName + ".png"));
+                bmp.Save(Path.Combine(folderPath, fileName + ".png"));
+            }
         }
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            /*double width = 0;
-            if (double.IsNormal(availableSize.Width))
-                width = availableSize.Width;
-
-            double height = 0;
-            if (double.IsNormal(availableSize.Height))
-                height = availableSize.Height;
-            
-            return new Size(width, height);*/
-            
-            
             var source = Source;
             var result = new Size();
 
@@ -193,13 +185,12 @@ namespace ImageCutter
             {
                 result = Stretch.Fill.CalculateSize(availableSize, source.Size, StretchDirection);
             }
-
-return result;
+            
+            return result;
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            //return Size.Empty;
             var source = Source;
 
             if (source != null)

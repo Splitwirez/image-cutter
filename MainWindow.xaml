@@ -5,7 +5,7 @@
         xmlns:local="clr-namespace:ImageCutter"
         mc:Ignorable="d" Width="800" Height="450"
         x:Class="ImageCutter.MainWindow"
-        Title="ImageCutter">
+        Title="ImageCutter" Icon="avares://ImageCutter/Assets/Icon.ico">
     <Panel x:Name="PagesPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <UniformGrid x:Name="HomePage">
             <Button x:Name="SliceExistingImageButton" Click="SliceExistingImageButton_Click">Slice existing image</Button>

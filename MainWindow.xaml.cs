@@ -6,6 +6,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace ImageCutter
@@ -24,7 +25,24 @@ namespace ImageCutter
             AvaloniaXamlLoader.Load(this);
             _pagesPanel = this.Find<Panel>("PagesPanel");
             _slicer = this.Find<ImageSlicer>("Slicer");
-            SetActivePage(0);
+
+            string cmdPath = null;
+            foreach (string s in Environment.GetCommandLineArgs())
+            {
+                if (File.Exists(s) && (s.EndsWith(".png", StringComparison.OrdinalIgnoreCase)))
+                {
+                    cmdPath = s;
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(cmdPath) || string.IsNullOrWhiteSpace(cmdPath))
+                SetActivePage(0);
+            else
+            {
+                _slicer.Source = new Bitmap(cmdPath);
+                SetActivePage(1);
+            }
         }
 
         public async void SliceExistingImageButton_Click(object sender, RoutedEventArgs e)
