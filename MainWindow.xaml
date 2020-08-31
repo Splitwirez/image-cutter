@@ -1,0 +1,37 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageCutter"
+        mc:Ignorable="d" Width="800" Height="450"
+        x:Class="ImageCutter.MainWindow"
+        Title="ImageCutter">
+    <Panel x:Name="PagesPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <UniformGrid x:Name="HomePage">
+            <Button x:Name="SliceExistingImageButton" Click="SliceExistingImageButton_Click">Slice existing image</Button>
+        </UniformGrid>
+        <Grid x:Name="SliceExistingImagePage" RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <NumericUpDown x:Name="LeftSlice" Minimum="0" Grid.Row="1" Grid.Column="0"/>
+            <NumericUpDown x:Name="TopSlice" Minimum="0" Grid.Row="0" Grid.Column="1"/>
+            <NumericUpDown x:Name="RightSlice" Minimum="0" Grid.Row="1" Grid.Column="2"/>
+            <NumericUpDown x:Name="BottomSlice" Minimum="0" Grid.Row="2" Grid.Column="1"/>
+            <local:ImageSlicer x:Name="Slicer" Slices="5,10,15,20" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <local:ImageSlicer.Slices>
+                    <MultiBinding>
+                        <MultiBinding.Converter>
+                            <local:DoublesToThicknessConverter/>
+                        </MultiBinding.Converter>
+                        <MultiBinding.Bindings>
+                            <Binding Path="#LeftSlice.Value"/>
+                            <Binding Path="#TopSlice.Value"/>
+                            <Binding Path="#RightSlice.Value"/>
+                            <Binding Path="#BottomSlice.Value"/>
+                        </MultiBinding.Bindings>
+                    </MultiBinding>
+                    <!--Thickness Left="{Binding #LeftSlice.Value}" Top="{Binding #TopSlice.Value}" Right="{Binding #RightSlice.Value}" Bottom="{Binding #BottomSlice.Value}"/-->
+                </local:ImageSlicer.Slices>
+            </local:ImageSlicer>
+            <Button x:Name="SliceExistingImageSaveButton" Click="SliceExistingImageSaveButton_Click" Grid.Row="3" Grid.ColumnSpan="3">Save</Button>
+        </Grid>
+    </Panel>
+</Window>
