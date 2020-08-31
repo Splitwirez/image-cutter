@@ -5,3 +5,4 @@ ImageCutter is a simple tool for automatically cutting a single image into nine 
 
 ### Attributions
 - The `WriteableBitmapSurface` class was pulled from https://github.com/Kermalis/PokemonGameEngine/blob/master/MapEditor/Util/WriteableBitmapSurface.cs
+- ImageCutter's GUI is built with https://github.com/AvaloniaUI/Avalonia
