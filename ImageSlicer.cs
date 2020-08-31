@@ -204,19 +204,21 @@ namespace ImageCutter
                 return new Size();
             }
         }
-
-        //https://github.com/Kermalis/PokemonGameEngine/blob/master/MapEditor/Util/WriteableBitmapSurface.cs
-        internal sealed class WriteableBitmapSurface : IFramebufferPlatformSurface
-        {
-            private readonly WriteableBitmap _bitmap;
-            public WriteableBitmapSurface(WriteableBitmap bmp)
-            {
-                _bitmap = bmp;
-            }
-            public ILockedFramebuffer Lock()
-            {
-                return _bitmap.Lock();
-            }
     }
+
+
+
+    //https://github.com/Kermalis/PokemonGameEngine/blob/master/MapEditor/Util/WriteableBitmapSurface.cs
+    internal sealed class WriteableBitmapSurface : IFramebufferPlatformSurface
+    {
+        private readonly WriteableBitmap _bitmap;
+        public WriteableBitmapSurface(WriteableBitmap bmp)
+        {
+            _bitmap = bmp;
+        }
+        public ILockedFramebuffer Lock()
+        {
+            return _bitmap.Lock();
+        }
     }
 }

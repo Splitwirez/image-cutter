@@ -8,77 +8,107 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ImageCutter
 {
     public class MainWindow : Window
     {
         Panel _pagesPanel = null;
-        ImageSlicer _slicer = null;
+        ImageSlicer _nineGridSlicer = null;
+        StateSlicer _stateSlicer = null;
+
+        Window _thisWindow = null;
 
         public MainWindow()
         {
             InitializeComponent();
         }
+        
+        string _cmdPath = null;
+        bool _hasCmdPath = false;
+        
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
             _pagesPanel = this.Find<Panel>("PagesPanel");
-            _slicer = this.Find<ImageSlicer>("Slicer");
+            _nineGridSlicer = this.Find<ImageSlicer>("NineGrid");
+            _stateSlicer = this.Find<StateSlicer>("StateSlicer");
+            _thisWindow = this;
 
-            string cmdPath = null;
             foreach (string s in Environment.GetCommandLineArgs())
             {
                 if (File.Exists(s) && (s.EndsWith(".png", StringComparison.OrdinalIgnoreCase)))
                 {
-                    cmdPath = s;
+                    _cmdPath = s;
+                    _hasCmdPath = true;
                     break;
                 }
             }
 
-            if (string.IsNullOrEmpty(cmdPath) || string.IsNullOrWhiteSpace(cmdPath))
-                SetActivePage(0);
+            SetActivePage(0);
+        }
+
+        public async void SliceIntoNineGridButton_Click(object sender, RoutedEventArgs e)
+        {
+            string path = await BrowseForOrGetImageFromCmd();
+            if (path != null)
+            {
+                _nineGridSlicer.Source = new Bitmap(path);
+                SetActivePage(1);
+            }
+        }
+
+        public async void SliceIntoStatesButton_Click(object sender, RoutedEventArgs e)
+        {
+            string path = await BrowseForOrGetImageFromCmd();
+            if (path != null)
+            {
+                _stateSlicer.Source = new Bitmap(path);
+                SetActivePage(2);
+            }
+        }
+
+        public async Task<string> BrowseForOrGetImageFromCmd()
+        {
+            if (_hasCmdPath)
+                return _cmdPath;
             else
             {
-                _slicer.Source = new Bitmap(cmdPath);
-                SetActivePage(1);
-            }
-        }
-
-        public async void SliceExistingImageButton_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog dialog = new OpenFileDialog()
-            {
-                Directory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
-                /*Filters = new List<FileDialogFilter>()
+                OpenFileDialog dialog = new OpenFileDialog()
                 {
-                    new FileDialogFilter()
-                    {
-                        Extensions = new List<string>()
-                        {
-                            ".png"
-                        },
-                        Name = "PNG images"
-                    }
-                }*/
-            };
+                    Directory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+                };
 
-            string[] paths = await dialog.ShowAsync(this);
-            if (paths.Length > 0)
-            {
-                _slicer.Source = new Bitmap(paths[0]);
-                SetActivePage(1);
+                string[] paths = await dialog.ShowAsync(this);
+                if (paths.Length > 0)
+                {
+                    return paths[0];
+                }
+                else
+                    return null;
             }
         }
 
-        public async void SliceExistingImageSaveButton_Click(object sender, RoutedEventArgs e)
+        public async void SliceIntoNineGridSaveButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFolderDialog dialog = new OpenFolderDialog();
 
             string path = await dialog.ShowAsync(this);
             if ((!string.IsNullOrEmpty(path)) && (!string.IsNullOrWhiteSpace(path)))
             {
-                _slicer.SaveSlicesToFiles(path, "SlicedImage");
+                _nineGridSlicer.SaveSlicesToFiles(path, "NineGridSlicedImage");
+            }
+        }
+
+        public async void SliceIntoStatesSaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFolderDialog dialog = new OpenFolderDialog();
+
+            string path = await dialog.ShowAsync(this);
+            if ((!string.IsNullOrEmpty(path)) && (!string.IsNullOrWhiteSpace(path)))
+            {
+                _stateSlicer.SaveStatesToFiles(path, "StateSlicedImage");
             }
         }
 

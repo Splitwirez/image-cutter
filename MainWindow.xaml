@@ -6,16 +6,46 @@
         mc:Ignorable="d" Width="800" Height="450"
         x:Class="ImageCutter.MainWindow"
         Title="ImageCutter" Icon="avares://ImageCutter/Assets/Icon.ico">
+    <Window.Styles>
+        <Style Selector="UniformGrid#HomePage Button">
+            <Setter Property="Margin" Value="50"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style Selector="UniformGrid#HomePage Button:not(:pointerover):not(:pressed)">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+    </Window.Styles>
     <Panel x:Name="PagesPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <UniformGrid x:Name="HomePage">
-            <Button x:Name="SliceExistingImageButton" Click="SliceExistingImageButton_Click">Slice existing image</Button>
+        <UniformGrid x:Name="HomePage" Rows="1">
+            <Button x:Name="SliceIntoNineGridButton" Click="SliceIntoNineGridButton_Click">
+                <StackPanel Orientation="Vertical">
+                    <Panel Width="128" Height="128">
+                        <Border Margin="16,0" BorderThickness="4,0" BorderBrush="{Binding $parent[Button].Foreground}"/>
+                        <Border Margin="0,16" BorderThickness="0,4" BorderBrush="{Binding $parent[Button].Foreground}"/>
+                    </Panel>
+                    <TextBlock Text="Slice an image into a nine-grid" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button x:Name="SliceIntoStatesButton" Click="SliceIntoStatesButton_Click">
+                <StackPanel Orientation="Vertical">
+                    <UniformGrid Columns="1" Width="96" Height="128">
+                        <Rectangle Fill="{Binding $parent[Button].Foreground}"/>
+                        <Rectangle Fill="{Binding $parent[Button].BorderBrush}"/>
+                        <Rectangle Fill="{Binding $parent[Button].Foreground}"/>
+                        <Rectangle Fill="{Binding $parent[Button].BorderBrush}"/>
+                        <Rectangle Fill="{Binding $parent[Button].Foreground}"/>
+                    </UniformGrid>
+                    <TextBlock Text="Slice an image into separate states" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Button>
         </UniformGrid>
-        <Grid x:Name="SliceExistingImagePage" RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid x:Name="SliceIntoNineGridPage" RowDefinitions="Auto,*,Auto,Auto" ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <NumericUpDown x:Name="LeftSlice" Minimum="0" Grid.Row="1" Grid.Column="0"/>
             <NumericUpDown x:Name="TopSlice" Minimum="0" Grid.Row="0" Grid.Column="1"/>
             <NumericUpDown x:Name="RightSlice" Minimum="0" Grid.Row="1" Grid.Column="2"/>
             <NumericUpDown x:Name="BottomSlice" Minimum="0" Grid.Row="2" Grid.Column="1"/>
-            <local:ImageSlicer x:Name="Slicer" Slices="5,10,15,20" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <local:ImageSlicer x:Name="NineGridSlicer" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <local:ImageSlicer.Slices>
                     <MultiBinding>
                         <MultiBinding.Converter>
@@ -28,10 +58,15 @@
                             <Binding Path="#BottomSlice.Value"/>
                         </MultiBinding.Bindings>
                     </MultiBinding>
-                    <!--Thickness Left="{Binding #LeftSlice.Value}" Top="{Binding #TopSlice.Value}" Right="{Binding #RightSlice.Value}" Bottom="{Binding #BottomSlice.Value}"/-->
                 </local:ImageSlicer.Slices>
             </local:ImageSlicer>
-            <Button x:Name="SliceExistingImageSaveButton" Click="SliceExistingImageSaveButton_Click" Grid.Row="3" Grid.ColumnSpan="3">Save</Button>
+            <Button x:Name="SliceIntoNineGridSaveButton" Click="SliceIntoNineGridSaveButton_Click" Grid.Row="3" Grid.ColumnSpan="3">Save</Button>
+        </Grid>
+        <Grid x:Name="SliceIntoStatesPage" RowDefinitions="Auto,*,Auto" ColumnDefinitions="Auto,*" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <NumericUpDown x:Name="HorizontalStates" Minimum="1" Value="1" Grid.Row="1" Grid.Column="0"/>
+            <NumericUpDown x:Name="VerticalStates" Minimum="1" Value="1" Grid.Row="0" Grid.Column="1"/>
+            <local:StateSlicer x:Name="StateSlicer" HorizontalStates="{Binding #HorizontalStates.Value}" VerticalStates="{Binding #VerticalStates.Value}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <Button x:Name="SliceIntoStatesSaveButton" Click="SliceIntoStatesSaveButton_Click" Grid.Row="3" Grid.ColumnSpan="3">Save</Button>
         </Grid>
     </Panel>
 </Window>
