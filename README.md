@@ -1,4 +1,11 @@
-# ImageCutter
+
+
+<p align="center">
+  <a href="hhttps://github.com/Splitwirez/image-cutter">
+    <img src="/Assets/Icon.png" alt="ImageCutter Icon">
+  </a>
+</p>
+<h1 align="center">ImageCutter</h1>
 
 ImageCutter is a simple tool for automatically cutting a single image into nine pieces which can be used as a nine-grid, without the need for runtime image slicing.
 
